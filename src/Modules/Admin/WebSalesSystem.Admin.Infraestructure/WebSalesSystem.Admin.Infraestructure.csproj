@@ -7,9 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Shared\WebSalesSystem.Shared.Application\WebSalesSystem.Shared.Application.csproj" />
+    <ProjectReference Include="..\..\..\Shared\WebSalesSystem.Shared.Infraestructure\WebSalesSystem.Shared.Infraestructure.csproj" />
     <ProjectReference Include="..\WebSalesSystem.Admin.Domain\WebSalesSystem.Admin.Domain.csproj" />
-    <ProjectReference Include="..\WebSalesSystem.Admin.Infraestructure\WebSalesSystem.Admin.Infraestructure.csproj" />
   </ItemGroup>
 
 </Project>

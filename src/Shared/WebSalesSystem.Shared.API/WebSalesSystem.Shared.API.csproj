@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Asp.Versioning.Mvc" Version="8.0.0" />
+    <PackageReference Include="Carter" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WebSalesSystem.Shared.Application\WebSalesSystem.Shared.Application.csproj" />
+    <ProjectReference Include="..\WebSalesSystem.Shared.Domain\WebSalesSystem.Shared.Domain.csproj" />
+    <ProjectReference Include="..\WebSalesSystem.Shared.Infraestructure\WebSalesSystem.Shared.Infraestructure.csproj" />
+  </ItemGroup>
+
+</Project>
