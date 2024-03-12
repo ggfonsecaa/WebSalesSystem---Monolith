@@ -1,9 +1,10 @@
 ﻿namespace WebSalesSystem.Shared.API.Helpers;
 public class ValidationProblemResponse
 {
-    public static IResult Create(List<Error> errors, int? statusCode = null, string? message = "Ocurrio un error durante la validación")
+    public static IResult Create(List<Error> errors, int? statusCode = null, string? message = null)
     {
         statusCode ??= StatusCodeConversion(errors);
+        message ??= AppValidations.ERROR_VALIDATIONFAILED;
 
         if (errors.Count == 1 && errors.All(error => error.Type != ErrorType.Validation))
         {
@@ -14,17 +15,17 @@ public class ValidationProblemResponse
 
         foreach (Error error in errors)
         {
-            if (modelDictionary.TryGetValue(error.Code, out string[]? value))
+            if (modelDictionary.TryGetValue(JsonNamingPolicy.CamelCase.ConvertName(error.Code), out string[]? value))
             {
-                modelDictionary[error.Code] = [.. value, .. new[] { error.Description }];
+                modelDictionary[JsonNamingPolicy.CamelCase.ConvertName(error.Code)] = [.. value, .. new[] { error.Description }];
             }
             else
             {
-                modelDictionary.Add(error.Code, [error.Description]);
+                modelDictionary.Add(JsonNamingPolicy.CamelCase.ConvertName(error.Code), [error.Description]);
             }
         }
 
-        return Results.ValidationProblem(modelDictionary, statusCode: statusCode, title: message);
+        return Results.ValidationProblem(modelDictionary, statusCode: statusCode, title: AppValidations.ERROR_VALIDATIONFAILED);
     }
 
     private static int StatusCodeConversion(List<Error> errors) 

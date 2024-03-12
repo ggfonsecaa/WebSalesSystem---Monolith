@@ -6,7 +6,7 @@ public class GlobalExceptionHandler : IExceptionHandler
         (int statusCode, string message) = exception switch
         {
             IServiceException serviceException => ((int)serviceException.StatusCode, serviceException.ErrorMessage),
-            _ => (StatusCodes.Status500InternalServerError, "Ocurrió un error inesperado")
+            _ => (StatusCodes.Status500InternalServerError, AppValidations.ERROR_SERVERERROR)
         };
 
         //_logger.LogInformation("{Type}: {StatusCode} with exception {Exception}", "Error", statusCode, message);

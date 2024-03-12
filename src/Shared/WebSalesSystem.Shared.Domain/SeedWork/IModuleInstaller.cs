@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-
-namespace WebSalesSystem.Shared.Domain.SeedWork;
+﻿namespace WebSalesSystem.Shared.Domain.SeedWork;
 public interface IModuleInstaller
 {
     public IServiceCollection Install(IServiceCollection serviceCollection, IConfiguration configuration);

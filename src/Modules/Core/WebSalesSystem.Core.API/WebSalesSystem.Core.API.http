@@ -1,0 +1,6 @@
+@WebSalesSystem.Core.API_HostAddress = http://localhost:5267
+
+GET {{WebSalesSystem.Core.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

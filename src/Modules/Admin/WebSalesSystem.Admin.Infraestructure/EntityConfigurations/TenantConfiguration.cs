@@ -10,12 +10,12 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
         #endregion
 
         #region Definición de campos y tipos de datos
-        _ = builder.Property(x => x.Id).IsRequired().UseIdentityColumn().ValueGeneratedOnAdd().HasColumnOrder(1);
-        _ = builder.Property(x => x.Name).IsRequired().HasMaxLength(TenantConstants.NAME_LENGHT).HasColumnOrder(2);
-        _ = builder.Property(x => x.Email).IsRequired().HasMaxLength(TenantConstants.EMAIL_LENGTH).HasColumnOrder(3);
-        _ = builder.Property(x => x.Description).IsRequired().HasMaxLength(TenantConstants.DESCRIPTION_LENGHT).HasColumnOrder(4);
-        _ = builder.Property(x => x.Identifier).IsRequired().HasColumnOrder(5);
-        _ = builder.Property(x => x.IsActive).IsRequired().HasColumnOrder(6);
+        _ = builder.Property(x => x.Id).IsRequired().UseIdentityColumn().ValueGeneratedOnAdd();
+        _ = builder.Property(x => x.Name).IsRequired().HasMaxLength(TenantConstants.NAME_LENGHT);
+        _ = builder.Property(x => x.Email).IsRequired().HasMaxLength(TenantConstants.EMAIL_LENGTH);
+        _ = builder.Property(x => x.Description).IsRequired().HasMaxLength(TenantConstants.DESCRIPTION_LENGHT);
+        _ = builder.Property(x => x.Identifier).IsRequired();
+        _ = builder.Property(x => x.IsActive).IsRequired();
         _ = builder.Property(x => x.CreatedBy).IsRequired();
         _ = builder.Property(x => x.CreatedAt).IsRequired();
         _ = builder.Property(x => x.LastModifiedBy);
@@ -23,6 +23,7 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
         _ = builder.Property(x => x.RowVersion).IsRequired().IsConcurrencyToken().IsRowVersion().ValueGeneratedOnAddOrUpdate();
         _ = builder.Ignore(x => x.Configuration);
         _ = builder.Ignore(x => x.DomainEvents);
+        //_ = builder.Ignore(x => x.SubTenants);
         #endregion
 
         #region Definición de índices
@@ -37,8 +38,9 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
         _ = builder.OwnsOne(x => x.Configuration, c =>
         {
             //c.ToTable("Configuration");
-            _ = c.Property(x => x.StorageType).HasColumnName("StorageType").IsRequired();
-            _ = c.Property(x => x.StorageName).HasColumnName("StorageName").IsRequired().HasMaxLength(TenantConstants.STORAGENAME_LENGHT);
+            _ = c.Property(x => x.StorageType).HasColumnName("StorageType").IsRequired().HasConversion<StorageTypeConverter>();
+            _ = c.Property(x => x.DbProvider).HasColumnName("DbProvider").IsRequired().HasConversion<DbProviderConverter>();
+            _ = c.Property(x => x.StorageName).HasColumnName("StorageName").HasMaxLength(TenantConstants.STORAGENAME_LENGHT);
             _ = c.Property(x => x.UseSubTenants).HasColumnName("UseSubTenants");
             _ = c.Property(x => x.AllowExternalRegister).HasColumnName("AllowExternalRegister");
             _ = c.Property(x => x.UseEmailConfirmation).HasColumnName("UseEmailConfirmation");

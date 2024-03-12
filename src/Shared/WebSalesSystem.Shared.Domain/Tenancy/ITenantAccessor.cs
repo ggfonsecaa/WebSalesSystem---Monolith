@@ -1,6 +1,11 @@
 ﻿namespace WebSalesSystem.Shared.Domain.Tenancy;
-public interface ITenantAccessor<T, S> where T : BaseTenant where S : BaseSubTenant
+public interface ITenantAccessor
 {
-    public T? Tenant { get; }
-    public S? SubTenant { get; }
+    public Tenant? Tenant { get; }
+    public SubTenant? SubTenant { get; }
+
+
+    public Task GetTenantAsync();
+    public Task GetSubTenantAsync();
+    public string GetConnectionString(string context);
 }

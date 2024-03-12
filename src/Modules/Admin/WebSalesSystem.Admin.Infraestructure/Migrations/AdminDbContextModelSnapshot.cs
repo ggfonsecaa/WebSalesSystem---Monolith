@@ -22,12 +22,11 @@ namespace WebSalesSystem.Admin.Infraestructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("WebSalesSystem.Admin.Domain.Aggregates.TenantAggregate.Tenant", b =>
+            modelBuilder.Entity("WebSalesSystem.Shared.Domain.Tenancy.Aggregates.SubTenantAggregate.SubTenant", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnOrder(1);
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
@@ -40,22 +39,15 @@ namespace WebSalesSystem.Admin.Infraestructure.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar")
-                        .HasColumnOrder(4);
+                        .HasColumnType("varchar");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar")
-                        .HasColumnOrder(3);
-
-                    b.Property<Guid>("Identifier")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnOrder(5);
+                        .HasColumnType("varchar");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit")
-                        .HasColumnOrder(6);
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("datetime2");
@@ -66,8 +58,67 @@ namespace WebSalesSystem.Admin.Infraestructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar")
-                        .HasColumnOrder(2);
+                        .HasColumnType("varchar");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("Name", "Email")
+                        .IsUnique();
+
+                    b.ToTable("SubTenants", (string)null);
+                });
+
+            modelBuilder.Entity("WebSalesSystem.Shared.Domain.Tenancy.Aggregates.TenantAggregate.Tenant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar");
+
+                    b.Property<Guid>("Identifier")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("LastModifiedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
@@ -83,9 +134,20 @@ namespace WebSalesSystem.Admin.Infraestructure.Migrations
                     b.ToTable("Tenants", (string)null);
                 });
 
-            modelBuilder.Entity("WebSalesSystem.Admin.Domain.Aggregates.TenantAggregate.Tenant", b =>
+            modelBuilder.Entity("WebSalesSystem.Shared.Domain.Tenancy.Aggregates.SubTenantAggregate.SubTenant", b =>
                 {
-                    b.OwnsOne("WebSalesSystem.Admin.Domain.Aggregates.TenantAggregate.Configuration", "Configuration", b1 =>
+                    b.HasOne("WebSalesSystem.Shared.Domain.Tenancy.Aggregates.TenantAggregate.Tenant", "Tenant")
+                        .WithMany("SubTenants")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("WebSalesSystem.Shared.Domain.Tenancy.Aggregates.TenantAggregate.Tenant", b =>
+                {
+                    b.OwnsOne("WebSalesSystem.Shared.Domain.Tenancy.Aggregates.TenantAggregate.Configuration", "Configuration", b1 =>
                         {
                             b1.Property<int>("TenantId")
                                 .HasColumnType("int");
@@ -93,6 +155,10 @@ namespace WebSalesSystem.Admin.Infraestructure.Migrations
                             b1.Property<bool>("AllowExternalRegister")
                                 .HasColumnType("bit")
                                 .HasColumnName("AllowExternalRegister");
+
+                            b1.Property<int>("DbProvider")
+                                .HasColumnType("int")
+                                .HasColumnName("DbProvider");
 
                             b1.Property<string>("StorageName")
                                 .IsRequired()
@@ -122,6 +188,11 @@ namespace WebSalesSystem.Admin.Infraestructure.Migrations
 
                     b.Navigation("Configuration")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("WebSalesSystem.Shared.Domain.Tenancy.Aggregates.TenantAggregate.Tenant", b =>
+                {
+                    b.Navigation("SubTenants");
                 });
 #pragma warning restore 612, 618
         }

@@ -7,4 +7,26 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\WebSalesSystem.Shared.Domain\WebSalesSystem.Shared.Domain.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Globalization\Resources\Strings\AdminStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AdminStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Globalization\Resources\Validations\AdminValidations.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AdminValidations.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Globalization\Resources\Strings\AdminStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AdminStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Globalization\Resources\Validations\AdminValidations.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AdminValidations.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

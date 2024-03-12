@@ -31,7 +31,7 @@ public class SharedModuleInstaller : IModuleInstaller
 
     public void Configure(IApplicationBuilder app)
     {
-        _ = app.UseMultiTenancy();
+
     }
 
     public void Configure(IApplicationBuilder app, params Assembly[] assemblies)

@@ -1,7 +1,7 @@
 ﻿namespace WebSalesSystem.Shared.Infraestructure.Interceptors;
-public class TenantInterceptor(ITenantAccessor<BaseTenant, BaseSubTenant> tenantAccessor) : SaveChangesInterceptor
+public class TenantInterceptor(ITenantAccessor tenantAccessor) : SaveChangesInterceptor
 {
-    private readonly ITenantAccessor<BaseTenant, BaseSubTenant> _tenantAccessor = tenantAccessor;
+    private readonly ITenantAccessor _tenantAccessor = tenantAccessor;
 
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
     {

@@ -1,8 +1,4 @@
-﻿using System.Reflection;
-
-using WebSalesSystem.Shared.Domain.SeedWork;
-
-namespace WebSalesSystem.App.Extensions;
+﻿namespace WebSalesSystem.App.Extensions;
 
 public static class ModuleInstallerExtension
 {

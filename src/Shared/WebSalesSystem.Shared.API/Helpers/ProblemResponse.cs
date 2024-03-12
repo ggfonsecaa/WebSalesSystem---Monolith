@@ -1,5 +1,8 @@
-﻿namespace WebSalesSystem.Shared.API.Helpers;
+﻿using WebSalesSystem.Shared.Domain.Globalization.Resources.Validations;
+
+namespace WebSalesSystem.Shared.API.Helpers;
 public class ProblemResponse
 {
-    public static IResult Create(int? statusCode = StatusCodes.Status500InternalServerError, string? message = "Ocurrio un error inesperado") => Results.Problem(message, statusCode: statusCode, title: "Excepción");
+    public static IResult Create(int? statusCode = StatusCodes.Status500InternalServerError, string? message = null) 
+        => Results.Problem(message ?? AppValidations.ERROR_SERVERERROR, statusCode: statusCode, title: AppValidations.ERROR_EXCEPTION);
 }

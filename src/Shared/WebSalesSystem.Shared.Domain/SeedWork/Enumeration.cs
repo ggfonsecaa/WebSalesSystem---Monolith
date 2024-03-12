@@ -13,6 +13,10 @@ public abstract class Enumeration : IComparable
                  .Select(f => f.GetValue(null))
                  .Cast<T>();
 
+    public static T? FromId<T>(int? id) where T : Enumeration => GetAll<T>().FirstOrDefault(e => e.Id == id);
+
+    public static T? FromName<T>(string? name) where T : Enumeration => GetAll<T>().FirstOrDefault(e => e.Name == name);
+
     public override bool Equals(object? obj)
     {
         if (obj is not Enumeration otherValue)

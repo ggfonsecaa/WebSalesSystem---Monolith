@@ -1,8 +1,4 @@
-﻿using WebSalesSystem.Shared.Application.Extensions.Middleware.MultiTenancy;
-using WebSalesSystem.Shared.Infraestructure.Tenancy.ResolutionStrategy;
-using WebSalesSystem.Shared.Infraestructure.Tenancy.Storage;
-
-namespace WebSalesSystem.Admin.Application;
+﻿namespace WebSalesSystem.Admin.Application;
 public class AdminApplicationServiceInstaller : IServiceInstaller
 {
     public void Install(IServiceCollection serviceCollection, IConfiguration configuration)

@@ -1,7 +1,7 @@
 ﻿namespace WebSalesSystem.Shared.Infraestructure.Interceptors;
-public class AuditInterceptor(IHttpContextAccessor httpContextAccessor) : SaveChangesInterceptor
+public class AuditInterceptor(ITenantAccessor tenantAccessor) : SaveChangesInterceptor
 {
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly ITenantAccessor _tenantAccessor = tenantAccessor; //Cambiar por el user accesor
 
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
     {
@@ -10,12 +10,12 @@ public class AuditInterceptor(IHttpContextAccessor httpContextAccessor) : SaveCh
             switch (entry.State)
             {
                 case EntityState.Added:
-                    entry.Entity.CreatedBy = 1;
+                    entry.Entity.CreatedBy = _tenantAccessor.Tenant!.Id;
                     entry.Entity.CreatedAt = DateTime.UtcNow;
                     break;
 
                 case EntityState.Modified:
-                    entry.Entity.LastModifiedBy = 1;
+                    entry.Entity.LastModifiedBy = _tenantAccessor.Tenant!.Id; ;
                     entry.Entity.LastModifiedAt = DateTime.UtcNow;
                     break;
             }

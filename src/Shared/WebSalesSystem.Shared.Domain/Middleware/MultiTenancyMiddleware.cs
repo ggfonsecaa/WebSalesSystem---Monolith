@@ -1,41 +1,36 @@
-﻿namespace WebSalesSystem.Shared.Domain.Middleware;
-public class MultiTenancyMiddleware<T, S>(RequestDelegate next, IFeatureManager featureManager) where T : BaseTenant where S : BaseSubTenant
+﻿using WebSalesSystem.Shared.Domain.Tenancy.Attributes;
+
+namespace WebSalesSystem.Shared.Domain.Middleware;
+public class MultiTenancyMiddleware(IFeatureManager featureManager, ITenantAccessor tenantAccessor) : IMiddleware
 {
-    private readonly RequestDelegate _next = next;
     private readonly IFeatureManager _featureManager = featureManager;
+    private readonly ITenantAccessor _tenantAccessor = tenantAccessor;
 
-    public async Task InvokeAsync(HttpContext context, IServiceProvider serviceProvider)
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        if (!await IsMultiTenantEnabled(context)) 
-        { 
-            await _next(context);
-            return;
-        }
-
-        ITenantStorage<T, S> tenantStorage = serviceProvider.GetRequiredService<ITenantStorage<T, S>>();
-        ITenantResolutionStrategy tenantResolutionStrategy = serviceProvider.GetRequiredService<ITenantResolutionStrategy>();
-
-        if (!context.Items.ContainsKey(AppConstants.TENANT_KEY))
+        if (context.GetEndpoint()!.Metadata.GetMetadata<TenantEndpointAttribute>()!.ValidateTenant && await IsMultiTenancyEnabled(context))
         {
-            string identifier = await tenantResolutionStrategy.GetTenantIdentifierAsync(default);
-            T tenant = await tenantStorage.GetTenantAsync(identifier, default);
-            context.Items.Add(AppConstants.TENANT_KEY, tenant);
-        }
+            await _tenantAccessor.GetTenantAsync();
 
-        if (!context.Items.ContainsKey(AppConstants.SUBTENANT_KEY))
-        {
-            if (context.Items.TryGetValue(AppConstants.TENANT_KEY, out object? tenantObj) && tenantObj is T tenant)
+            if (_tenantAccessor.Tenant is null)
             {
-                int subTenantId = await tenantResolutionStrategy.GetSubTenantIdAsync(default);
-                S subTenant = await tenantStorage.GetSubTenantAsync(tenant.Identifier.ToString(), subTenantId, default);
-                context.Items.Add(AppConstants.SUBTENANT_KEY, subTenant);
+                await Results.Problem(AppValidations.ERROR_TENANTNOTPROVIDED, statusCode: 500, title: AppValidations.ERROR_SERVERERROR).ExecuteAsync(context);
+                return;
+            }
+
+            await _tenantAccessor.GetSubTenantAsync();
+
+            if (_tenantAccessor.Tenant.Configuration.UseSubTenants && _tenantAccessor.SubTenant is null)
+            {
+                await Results.Problem(AppValidations.ERROR_SUBTENANTNOTPROVIDED, statusCode: 500, title: AppValidations.ERROR_SERVERERROR).ExecuteAsync(context);
+                return;
             }
         }
 
-        await _next(context);
+        await next(context);
     }
 
-    private async Task<bool> IsMultiTenantEnabled(HttpContext context)
+    private async Task<bool> IsMultiTenancyEnabled(HttpContext context)
     {
         string module = context.Request.RouteValues.FirstOrDefault(x => x.Key == "module").Value!.ToString()!;
 

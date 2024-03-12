@@ -1,6 +1,6 @@
 ﻿namespace WebSalesSystem.Shared.Domain.Tenancy;
-public interface ITenantStorage<T, S> where T : BaseTenant where S : BaseSubTenant
+public interface ITenantStorage
 {
-    Task<T> GetTenantAsync(string identifier, CancellationToken cancellationToken = default);
-    Task<S> GetSubTenantAsync(string identifier, int id, CancellationToken cancellationToken = default);
+    Task<Tenant> GetTenantAsync(CancellationToken cancellationToken = default);
+    Task<SubTenant> GetSubTenantAsync(CancellationToken cancellationToken = default);
 }

@@ -3,9 +3,9 @@ public class SharedInfraestructureServiceInstaller : IServiceInstaller
 {
     public void Install(IServiceCollection serviceCollection, IConfiguration configuration)
     {
-        _ = serviceCollection.AddScoped<IUnitOfWork<AppDbContext>, UnitOfWork<AppDbContext>>();
-        _ = serviceCollection.AddScoped<IDbContextFactory<AppDbContext>, AppDbContextFactory>();
-        _ = serviceCollection.AddScoped<ITenantAccessor<BaseTenant, BaseSubTenant>, TenantAccessor<BaseTenant, BaseSubTenant>>();
+        _ = serviceCollection.AddScoped<GlobalizationMiddleware>();
+        _ = serviceCollection.AddScoped<MultiTenancyMiddleware>();
+        _ = serviceCollection.AddScoped<ITenantAccessor, TenantAccessor>();
         _ = serviceCollection.AddScoped<AuditInterceptor>();
         _ = serviceCollection.AddScoped<TenantInterceptor>();
         _ = serviceCollection.AddScoped<DomainEventsInterceptor>();
@@ -21,5 +21,8 @@ public class SharedInfraestructureServiceInstaller : IServiceInstaller
                           .AddInterceptors(auditInterceptor, domainEventsInterceptor)
                           .EnableDetailedErrors(true);
         });
+
+        _ = serviceCollection.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
+        _ = serviceCollection.AddScoped(typeof(IDbContextFactory<>), typeof(AppDbContextFactory<>));
     }
 }

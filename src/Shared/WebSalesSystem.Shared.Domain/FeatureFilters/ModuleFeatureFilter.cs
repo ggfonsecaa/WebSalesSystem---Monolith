@@ -10,7 +10,7 @@ public class ModuleFeatureFilter : IContextualFeatureFilter<FeatureFilterContext
 
             if (modulesList is not null)
             {
-                return Task.FromResult(modulesList.Modules.Contains(filterContext.Module));
+                return Task.FromResult(modulesList.Modules.Any(module => string.Equals(module, filterContext.Module, StringComparison.OrdinalIgnoreCase)));
             }
         }
 

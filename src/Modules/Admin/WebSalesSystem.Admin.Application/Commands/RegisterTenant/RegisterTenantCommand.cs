@@ -4,7 +4,8 @@ public class RegisterTenantCommand : IRequest<ErrorOr<TenantDTO>>
     public string Name { get; set; } = null!;
     public string Email { get; set; } = null!;
     public string Description { get; set; } = null!;
-    public StorageType StorageType { get; set; }
+    public StorageType StorageType { get; set; } = null!;
+    public DbProvider DbProvider { get; set; } = null!;
     public string StorageName { get; set; } = null!;
     public bool UseSubTenants { get; set; }
     public bool AllowExternalRegister { get; set; }

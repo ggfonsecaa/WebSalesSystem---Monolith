@@ -1,5 +1,5 @@
 ﻿namespace WebSalesSystem.Shared.API.Helpers;
-public class CustomProblemFactory(IOptions<ApiBehaviorOptions> options, IOptions<ProblemDetailsOptions>? problemDetailsOptions = null) : ProblemDetailsFactory
+public class CustomProblemFactory(IOptions<ApiBehaviorOptions> options, IOptions<ProblemDetailsOptions>? problemDetailsOptions = null) : ProblemDetailsFactory //Se puede quitar
 {
     private readonly ApiBehaviorOptions _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
     private readonly Action<ProblemDetailsContext>? _configure = problemDetailsOptions?.Value?.CustomizeProblemDetails;

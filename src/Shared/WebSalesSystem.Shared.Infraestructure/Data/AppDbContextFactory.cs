@@ -1,7 +1,7 @@
 ﻿namespace WebSalesSystem.Shared.Infraestructure.Data;
-public class AppDbContextFactory(IServiceProvider serviceProvider) : IDbContextFactory<AppDbContext>
+public class AppDbContextFactory<TDbContext>(TDbContext appDbContext) : IDbContextFactory<TDbContext> where TDbContext : DbContext
 {
-    private readonly IServiceProvider _serviceProvider = serviceProvider;
+    private readonly TDbContext _dbContext = appDbContext;
 
-    public AppDbContext CreateDbContext() => _serviceProvider.GetRequiredService<AppDbContext>();
+    public TDbContext CreateDbContext() => _dbContext;
 }

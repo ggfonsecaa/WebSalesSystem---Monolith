@@ -1,50 +1,51 @@
 ﻿namespace WebSalesSystem.Shared.Infraestructure.Tenancy;
-public class TenantAccessor<T, S>(IHttpContextAccessor contextAccessor, IServiceProvider serviceProvider/*, ConsumeContext consumeContext*/) : ITenantAccessor<T, S> where T : BaseTenant where S : BaseSubTenant
+public class TenantAccessor(IConfiguration configuration, IHttpContextAccessor contextAccessor, ITenantStorage tenantStore/*, ConsumeContext consumeContext*/) : ITenantAccessor
 {
     private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
-    private readonly ITenantStorage<T, S> _tenantStore = serviceProvider.GetRequiredService<ITenantStorage<T, S>>();
-    private readonly ITenantResolutionStrategy _resolutionStrategy = serviceProvider.GetRequiredService<ITenantResolutionStrategy>();
+    private readonly IConfiguration _configuration = configuration;
+    private readonly ITenantStorage _tenantStore = tenantStore;
 
-    public T? Tenant 
-    { 
-        get 
+    public Tenant? Tenant { get; private set; }
+    public SubTenant? SubTenant { get; private set; }
+
+
+    public async Task GetTenantAsync()
+    {
+        Tenant = _contextAccessor.HttpContext?.GetTenant();
+
+        if (Tenant is null)
         {
-            T? tenantFromContext = _contextAccessor.HttpContext?.GetTenant() as T;
+            //identifier ??= consumeContext.Headers.FirstOrDefault(x => x.Key == AppConstants.TENANT_HEADER).Value.ToString();
+            Tenant = await _tenantStore.GetTenantAsync(default);
+            _contextAccessor.HttpContext?.Items.Add(AppConstants.TENANT_KEY, Tenant);
+        };
+    }
 
-            if (tenantFromContext is not null)
-            {
-                return tenantFromContext;
-            }
-            else 
-            {
-                string? identifier = _resolutionStrategy.GetTenantIdentifierAsync().GetAwaiter().GetResult();
-                //identifier ??= consumeContext.Headers.FirstOrDefault(x => x.Key == AppConstants.TENANT_HEADER).Value.ToString();
-                T tenant = _tenantStore.GetTenantAsync(identifier!).GetAwaiter().GetResult();
-                _contextAccessor.HttpContext?.Items.Add(AppConstants.TENANT_KEY, tenant);
+    public async Task GetSubTenantAsync() 
+    {
+        SubTenant = _contextAccessor.HttpContext?.GetSubTenant();
 
-                return tenant;
-            };
+        if (SubTenant is null)
+        {
+            //id ??= consumeContext.Headers.FirstOrDefault(x => x.Key == AppConstants.SUBTENANT_HEADER).Value.ToString()!.FromHashId();
+            SubTenant = await _tenantStore.GetSubTenantAsync(default);
+            _contextAccessor.HttpContext?.Items.Add(AppConstants.SUBTENANT_KEY, SubTenant);
         }
     }
-    public S? SubTenant
+
+
+    public string GetConnectionString(string context)
     {
-        get
+        ConnectionStrings connectionStrings = new();
+        _configuration.GetSection("DataConnections").Bind(connectionStrings);
+
+        string connectionContext = connectionStrings.GetType().GetProperty(context)!.GetValue(connectionStrings)!.ToString()!;
+
+        if (Tenant!.Configuration.StorageType != StorageType.Shared) 
         {
-            S? subTenantFromContext = _contextAccessor.HttpContext?.GetSubTenant() as S;
-
-            if (subTenantFromContext is not null)
-            {
-                return subTenantFromContext;
-            }
-            else 
-            {
-                int? id = _resolutionStrategy.GetSubTenantIdAsync().GetAwaiter().GetResult();
-                //id ??= consumeContext.Headers.FirstOrDefault(x => x.Key == AppConstants.SUBTENANT_HEADER).Value.ToString()!.FromHashId();
-                S subTenant = _tenantStore.GetSubTenantAsync(Tenant!.Identifier.ToString(), id.Value).GetAwaiter().GetResult();
-                _contextAccessor.HttpContext?.Items.Add(AppConstants.SUBTENANT_KEY, subTenant);
-
-                return subTenant;
-            }
-        } 
+            return $"{connectionContext}".Replace("{dbName}", $@"{Tenant!.Configuration.StorageName}");
+        }
+        
+        return connectionContext;
     }
 }

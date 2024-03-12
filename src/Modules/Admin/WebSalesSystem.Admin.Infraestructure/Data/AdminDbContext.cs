@@ -1,17 +1,21 @@
 ﻿namespace WebSalesSystem.Admin.Infraestructure.Data;
-public class AdminDbContext(DbContextOptions<AdminDbContext> options, IConfiguration configuration, DomainEventsInterceptor domainEventsInterceptor, AuditInterceptor auditInterceptor) : AppDbContext(options, configuration, domainEventsInterceptor, auditInterceptor)
+public class AdminDbContext(DbContextOptions<AdminDbContext> options, IConfiguration configuration, DomainEventsInterceptor domainEventsInterceptor) : DbContext(options)
 {
     public DbSet<Tenant> Tenants => Set<Tenant>();
+    public DbSet<SubTenant> SubTenants => Set<SubTenant>();
 
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder) => configurationBuilder.Properties<string>().HaveColumnType("varchar");
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
 
-        //_ = optionsBuilder.UseSqlServer(DbContextConnectionString, sqlOptions
-        //    => sqlOptions.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name))
-        //            .AddInterceptors(_auditInterceptor!, _domainEventsInterceptor!)
-        //            .EnableDetailedErrors(true);
+        _ = optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+        _ = optionsBuilder.UseSqlServer(configuration.GetConnectionString(nameof(AdminDbContext)), sqlOptions
+            => sqlOptions.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name))
+                    .AddInterceptors(domainEventsInterceptor) // poner el interceptor de auditoria
+                    .EnableDetailedErrors(true);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
