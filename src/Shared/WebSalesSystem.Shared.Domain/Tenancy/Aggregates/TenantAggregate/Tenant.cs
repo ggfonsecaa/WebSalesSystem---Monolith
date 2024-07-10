@@ -1,4 +1,6 @@
-﻿namespace WebSalesSystem.Shared.Domain.Tenancy.Aggregates.TenantAggregate;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace WebSalesSystem.Shared.Domain.Tenancy.Aggregates.TenantAggregate;
 public class Tenant : Entity, ICommonEntity, IAuditableEntity, IAggregateRoot
 {
     public string Name { get; protected set; }
@@ -6,6 +8,8 @@ public class Tenant : Entity, ICommonEntity, IAuditableEntity, IAggregateRoot
     public string Description { get; protected set; }
     public Guid Identifier { get; protected set; }
     public bool IsActive { get; protected set; }
+    public DbProvider DbProvider { get; protected set; }
+    [NotMapped]
     public Configuration Configuration { get; protected set; }
     public int CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
@@ -23,7 +27,7 @@ public class Tenant : Entity, ICommonEntity, IAuditableEntity, IAggregateRoot
         Name = name;
         Email = email;
         Description = description;
-        Configuration = new(storageType, dbProvider, storageName, useSubTenants, allowExternalRegister, useEmailConfirmation);
+        Configuration = new(storageType, storageName, useSubTenants, allowExternalRegister, useEmailConfirmation);
 
         Identifier = Guid.NewGuid();
         IsActive = true;

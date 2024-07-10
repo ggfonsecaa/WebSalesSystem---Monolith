@@ -1,4 +1,5 @@
-﻿using WebSalesSystem.Shared.Domain.Tenancy;
+﻿using WebSalesSystem.Shared.Domain.Aggregates.IdentificationAggregate;
+using WebSalesSystem.Shared.Domain.Tenancy;
 using WebSalesSystem.Shared.Domain.Tenancy.Aggregates.SubTenantAggregate;
 
 namespace WebSalesSystem.Admin.Application.Commands.RegisterSubTenant;
@@ -25,9 +26,10 @@ public class RegisterSubTenantCommandHandler(IUnitOfWork<AdminDbContext> unitOfW
             return errorResult;
         }
         #endregion
+        var x = new IdentificationType();
 
         Tenant? tenant = (await _unitOfWork.GetRepository<Tenant>().GetByQueryAsync(x => x.Id == _tenantAccessor.Tenant!.Id, asTracking: true, cancellationToken: cancellationToken)).FirstOrDefault();
-        SubTenant subTenantToRegister = new(request.Name, request.Email, request.Description, tenant!);
+        SubTenant subTenantToRegister = new(x, "", request.Name, request.Email, request.Description, tenant!);
 
         _ = await _unitOfWork.GetRepository<SubTenant>().InsertAsync(subTenantToRegister, cancellationToken);
         _ = await _unitOfWork.SaveChangesAsync(cancellationToken);

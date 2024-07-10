@@ -20,9 +20,9 @@ internal class TenantMappingProfile : Profile
                 .ForMember(destination =>
                     destination.StorageType, origin =>
                         origin.MapFrom(x => x.Configuration.StorageType.Id))
-                .ForMember(destination =>
-                    destination.DbProvider, origin =>
-                        origin.MapFrom(x => x.Configuration.DbProvider.Id))
+                //.ForMember(destination =>
+                //    destination.DbProvider, origin =>
+                //        origin.MapFrom(x => x.Configuration.DbProvider.Id))
                 .ForMember(destination =>
                     destination.StorageName, origin =>
                         origin.MapFrom(x => x.Configuration.StorageName))

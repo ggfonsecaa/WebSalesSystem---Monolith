@@ -1,0 +1,89 @@
+<form [formGroup]="tenantRegisterForm" class="row g-3 p-2">
+    <mat-label class="text-center fs-3 pb-2 fw-bolder" i18n="@@tenant_titleRegisterNewTenant">Register new tenant</mat-label>
+    <div class="col-md-6">
+        <mat-form-field [floatLabel]="'auto'">
+            <mat-label i18n="@@tenant_name">Name</mat-label>
+            <input matInput placeholder="Tenant name" i18n-placeholder="@@tenant_name_placeholder" formControlName="name" required 
+                autocomplete="organization" autofocus>
+            @if(name.invalid)
+            {
+            <mat-error>{{validate().name}}</mat-error>
+            }
+        </mat-form-field>
+    </div>
+    <div class="col-md-6">
+        <mat-form-field [floatLabel]="'auto'">
+            <mat-label i18n="@@tenant_email">Email</mat-label>
+            <input matInput placeholder="Tenant email" i18n-placeholder="@@tenant_email_placeholder" formControlName="email" required
+                autocomplete="email">
+            @if (email.invalid) {
+            <mat-error>{{validate().email}}</mat-error>
+            }
+        </mat-form-field>
+    </div>
+    <div class="col-12">
+        <mat-form-field [floatLabel]="'auto'">
+            <mat-label i18n="@@tenant_description">Description</mat-label>
+            <textarea matInput placeholder="Tenant description" i18n-placeholder="@@tenant_description_placeholder" formControlName="description" 
+                required cdkTextareaAutosize #autosize="cdkTextareaAutosize"></textarea>
+            @if (description.invalid) {
+            <mat-error>{{validate().description}}</mat-error>
+            }
+        </mat-form-field>
+    </div>
+
+    <fieldset class="col-12 form-group border p-2">
+        <legend class="w-auto px-2 float-none" i18n="@@tenant_configuration_legend">Configuration</legend>
+        <div class="row">
+            <div class="row pb-2">
+                <div class="col-md-4">
+                    <mat-checkbox matTooltip="Check if you want to use sub-tenants within the application" i18n-matTooltip="@@tenant_useSubtenants_tooltip" [matTooltipPosition]="'below'" formControlName="useSubTenants" i18n="@@tenant_useSubtenants">Use subtenants</mat-checkbox>
+                </div>
+                <div class="col-md-4">
+                    <mat-checkbox matTooltip="Check if you want users to be able to register through external authentication services" i18n-matTooltip="@@tenant_allowExternalRegister_tooltip" [matTooltipPosition]="'below'" formControlName="allowExternalRegister" i18n="@@tenant_allowExternalRegister">Allow external register</mat-checkbox>
+                </div>
+                <div class="col-md-4">
+                    <mat-checkbox matTooltip="Check if you require registered users to confirm their email before being able to log in" i18n-matTooltip="@@tenant_useEmailConfirmation_tooltip" [matTooltipPosition]="'below'" formControlName="useEmailConfirmation" i18n="@@tenant_useEmailConfirmation">User email confirmation</mat-checkbox>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field [floatLabel]="'auto'">
+                    <mat-label i18n="@@tenant_dbProvider">Database provider</mat-label>
+                    <mat-select formControlName="dbProvider" required>
+                        <mat-option value="1" i18n="@@tenant_dbProvider_opt1">In memory</mat-option>
+                        <mat-option value="2" i18n="@@tenant_dbProvider_opt2">Sql Server</mat-option>
+                        <mat-option value="3" i18n="@@tenant_dbProvider_opt3">Oracle</mat-option>
+                        <mat-option value="4" i18n="@@tenant_dbProvider_opt4">PostgreSQL</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-4">
+                <mat-form-field [floatLabel]="'auto'">
+                    <mat-label i18n="@@tenant_storageType">Storage type</mat-label>
+                    <mat-select formControlName="storageType" required>
+                        <mat-option value="1" i18n="@@tenant_storageType_opt1">Shared</mat-option>
+                        <mat-option value="2" i18n="@@tenant_storageType_opt2">Dedicated schema</mat-option>
+                        <mat-option value="3" i18n="@@tenant_storageType_opt3">Dedicated database</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-4">
+                <mat-form-field [floatLabel]="'auto'">
+                    <mat-label i18n="@@tenant_storageName">Storage name</mat-label>
+                    <input matInput placeholder="Tenant storage name" i18n-placeholder="@@tenant_storageName_placeholder" 
+                        formControlName="storageName" [required]="(storageType.value != '1')">
+                    @if (storageName.invalid) {
+                    <mat-error>{{validate().storageName}}</mat-error>
+                    }
+                </mat-form-field>
+            </div>
+        </div>
+    </fieldset>
+    <div class="col-12 d-flex justify-content-center w-100 pb-3">
+        <button class="w-25" mat-raised-button color="primary" type="submit" matStepperNext i18n="@@tenant_btnNext">Next</button>
+    </div>
+</form>
+    <!-- <p>{{ tenantRegisterForm.value | json }}</p>
+    <p>{{ tenantRegisterForm.valid }}</p> -->

@@ -1,0 +1,58 @@
+<form [formGroup]="userRegisterForm" class="row g-3 p-2">
+    <mat-label class="text-center fs-3 pb-2 fw-bolder" i18n="@@user_titleRegisterNewUser">Register new user</mat-label>
+    <div class="col-md-6">
+        <mat-form-field [floatLabel]="'auto'">
+            <mat-label i18n="@@user_username">Username</mat-label>
+            <input matInput placeholder="User name" i18n-placeholder="@@user_username_placeholder"
+                formControlName="userName" required autocomplete="username" autofocus>
+            @if(userName.invalid)
+            {
+            <mat-error>{{validate().userName}}</mat-error>
+            }
+        </mat-form-field>
+    </div>
+    <div class="col-md-6">
+        <mat-form-field [floatLabel]="'auto'">
+            <mat-label i18n="@@user_email">Email</mat-label>
+            <input matInput placeholder="User email" i18n-placeholder="@@user_email_placeholder"
+                formControlName="email" required autocomplete="email">
+            @if (email.invalid) {
+            <mat-error>{{validate().email}}</mat-error>
+            }
+        </mat-form-field>
+    </div>
+    <div class="col-md-6">
+        <mat-form-field [floatLabel]="'auto'">
+            <mat-label i18n="@@user_password">Password</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" placeholder="Password" 
+                i18n-placeholder="@@user_password_placeholder" formControlName="password" required autocomplete="new-password">
+            <button type="button" mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" 
+                [attr.aria-pressed]="hidePassword">
+                <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            @if (password.invalid) {
+            <mat-error>{{validate().password}}</mat-error>
+            }
+        </mat-form-field>
+    </div>
+    <div class="col-md-6">
+        <mat-form-field [floatLabel]="'auto'">
+            <mat-label i18n="@@user_passwordConfirmation">Password confirmation</mat-label>
+            <input matInput [type]="hideConfirmation ? 'password' : 'text'" placeholder="Password confirmation"
+                i18n-placeholder="@@user_passwordConfirmation_placeholder" formControlName="passwordConfirmation" required autocomplete="new-password">
+            <button type="button" mat-icon-button matSuffix (click)="hideConfirmation = !hideConfirmation" [attr.aria-label]="'Hide password'" 
+                [attr.aria-pressed]="hideConfirmation">
+                <mat-icon>{{hideConfirmation ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            @if (passwordConfirmation.invalid) {
+            <mat-error>{{validate().passwordConfirmation}}</mat-error>
+            }
+        </mat-form-field>
+    </div>
+    <div class="col-12 d-flex justify-content-center w-100 pb-3">
+        <button class="w-25" mat-raised-button color="primary" type="submit" matStepperNext
+            i18n="@@user_btnNext">Next</button>
+    </div>
+</form>
+<!-- <p>{{ tenantRegisterForm.value | json }}</p>
+    <p>{{ tenantRegisterForm.valid }}</p> -->

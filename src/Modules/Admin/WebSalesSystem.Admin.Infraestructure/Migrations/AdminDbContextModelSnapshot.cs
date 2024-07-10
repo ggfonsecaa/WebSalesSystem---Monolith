@@ -79,6 +79,23 @@ namespace WebSalesSystem.Admin.Infraestructure.Migrations
                     b.ToTable("SubTenants", (string)null);
                 });
 
+            modelBuilder.Entity("WebSalesSystem.Shared.Domain.Tenancy.Aggregates.TenantAggregate.DbProvider", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("varchar");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DbProvider");
+                });
+
             modelBuilder.Entity("WebSalesSystem.Shared.Domain.Tenancy.Aggregates.TenantAggregate.Tenant", b =>
                 {
                     b.Property<int>("Id")
@@ -91,6 +108,9 @@ namespace WebSalesSystem.Admin.Infraestructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DbProviderId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -128,6 +148,8 @@ namespace WebSalesSystem.Admin.Infraestructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DbProviderId");
+
                     b.HasIndex("Name", "Email")
                         .IsUnique();
 
@@ -147,47 +169,13 @@ namespace WebSalesSystem.Admin.Infraestructure.Migrations
 
             modelBuilder.Entity("WebSalesSystem.Shared.Domain.Tenancy.Aggregates.TenantAggregate.Tenant", b =>
                 {
-                    b.OwnsOne("WebSalesSystem.Shared.Domain.Tenancy.Aggregates.TenantAggregate.Configuration", "Configuration", b1 =>
-                        {
-                            b1.Property<int>("TenantId")
-                                .HasColumnType("int");
-
-                            b1.Property<bool>("AllowExternalRegister")
-                                .HasColumnType("bit")
-                                .HasColumnName("AllowExternalRegister");
-
-                            b1.Property<int>("DbProvider")
-                                .HasColumnType("int")
-                                .HasColumnName("DbProvider");
-
-                            b1.Property<string>("StorageName")
-                                .IsRequired()
-                                .HasMaxLength(50)
-                                .HasColumnType("varchar")
-                                .HasColumnName("StorageName");
-
-                            b1.Property<int>("StorageType")
-                                .HasColumnType("int")
-                                .HasColumnName("StorageType");
-
-                            b1.Property<bool>("UseEmailConfirmation")
-                                .HasColumnType("bit")
-                                .HasColumnName("UseEmailConfirmation");
-
-                            b1.Property<bool>("UseSubTenants")
-                                .HasColumnType("bit")
-                                .HasColumnName("UseSubTenants");
-
-                            b1.HasKey("TenantId");
-
-                            b1.ToTable("Tenants");
-
-                            b1.WithOwner()
-                                .HasForeignKey("TenantId");
-                        });
-
-                    b.Navigation("Configuration")
+                    b.HasOne("WebSalesSystem.Shared.Domain.Tenancy.Aggregates.TenantAggregate.DbProvider", "DbProvider")
+                        .WithMany()
+                        .HasForeignKey("DbProviderId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("DbProvider");
                 });
 
             modelBuilder.Entity("WebSalesSystem.Shared.Domain.Tenancy.Aggregates.TenantAggregate.Tenant", b =>

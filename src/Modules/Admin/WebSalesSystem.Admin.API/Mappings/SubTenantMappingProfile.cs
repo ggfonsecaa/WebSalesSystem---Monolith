@@ -1,4 +1,5 @@
 ﻿using WebSalesSystem.Admin.Application.Commands.RegisterSubTenant;
+using WebSalesSystem.Shared.Domain.Aggregates.IdentificationAggregate;
 using WebSalesSystem.Shared.Domain.Tenancy.Aggregates.SubTenantAggregate;
 using WebSalesSystem.Shared.Infraestructure.Extensions;
 
@@ -7,7 +8,10 @@ public class SubTenantMappingProfile : Profile
 {
     public SubTenantMappingProfile()
     {
-        _ = CreateMap<RegisterSubTenantCommand, RegisterSubTenantRequest>().ReverseMap();
+        //_ = CreateMap<RegisterSubTenantCommand, RegisterSubTenantRequest>().ReverseMap()
+        //    .ForMember(destination =>
+        //            destination.IdentificationType, origin =>
+        //                origin.MapFrom(x => Enumeration.FromId<IdentificationType>(x.IdentificationType)));
 
         _ = CreateMap<TenantModel, Tenant>().ReverseMap()
                 .ForMember(destination =>

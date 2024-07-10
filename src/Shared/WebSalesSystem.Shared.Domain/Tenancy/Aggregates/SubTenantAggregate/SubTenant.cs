@@ -1,8 +1,11 @@
-﻿using WebSalesSystem.Shared.Domain.Aggregates.IdentificationAggregate;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+using WebSalesSystem.Shared.Domain.Aggregates.IdentificationAggregate;
 
 namespace WebSalesSystem.Shared.Domain.Tenancy.Aggregates.SubTenantAggregate;
 public class SubTenant : Entity, ITenantEntity, IAuditableEntity, IAggregateRoot
 {
+    [NotMapped]
     public Identification Identification { get; set; }
     public string Name { get; protected set; }
     public string Email { get; protected set; }

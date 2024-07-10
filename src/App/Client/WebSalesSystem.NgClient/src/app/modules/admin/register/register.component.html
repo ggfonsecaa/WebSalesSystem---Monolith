@@ -1,0 +1,29 @@
+<div class="main_container">
+    <mat-stepper [linear]="true" [orientation]="(stepperOrientation | async)!" #stepper>
+        <mat-step tabindex="-1" [stepControl]="stepTenant" errorMessage="There are required fields not completed" 
+            i18n-errorMessage="@@stepper_error_message" [editable]="false">
+            <ng-template matStepLabel i18n="@@stepper_register_tenant">Register tenant</ng-template>
+            <app-tenant></app-tenant>
+        </mat-step>
+        
+        @if(stepTenant?.get('useSubtenants')?.value){
+            <mat-step tabindex="-1" [stepControl]="stepSubtenant" errorMessage="There are required fields not completed"
+                i18n-errorMessage="@@stepper_error_message" [editable]="false">
+                <ng-template matStepLabel i18n="@@stepper_register_subtenant">Register subtenant</ng-template>
+                <app-subtenant></app-subtenant>
+            </mat-step>
+        }
+ 
+
+        <mat-step tabindex="-1" [stepControl]="stepUser" errorMessage="There are required fields not completed" 
+            i18n-errorMessage="@@stepper_error_message" [editable]="false">
+            <ng-template matStepLabel i18n="@@stepper_register_user">Create user</ng-template>
+            <app-user></app-user>
+        </mat-step>
+        
+        <mat-step tabindex="-1" [editable]="false">
+            <ng-template matStepLabel i18n="@@stepper_register_summary">Summary</ng-template>
+            <app-summary></app-summary>
+        </mat-step>
+    </mat-stepper>
+</div>

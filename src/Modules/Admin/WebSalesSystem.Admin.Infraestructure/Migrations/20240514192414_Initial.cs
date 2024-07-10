@@ -12,6 +12,19 @@ namespace WebSalesSystem.Admin.Infraestructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "DbProvider",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "varchar", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DbProvider", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tenants",
                 columns: table => new
                 {
@@ -22,12 +35,7 @@ namespace WebSalesSystem.Admin.Infraestructure.Migrations
                     Description = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false),
                     Identifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    StorageType = table.Column<int>(type: "int", nullable: false),
-                    DbProvider = table.Column<int>(type: "int", nullable: false),
-                    StorageName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
-                    UseSubTenants = table.Column<bool>(type: "bit", nullable: false),
-                    AllowExternalRegister = table.Column<bool>(type: "bit", nullable: false),
-                    UseEmailConfirmation = table.Column<bool>(type: "bit", nullable: false),
+                    DbProviderId = table.Column<int>(type: "int", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedBy = table.Column<int>(type: "int", nullable: true),
@@ -37,6 +45,12 @@ namespace WebSalesSystem.Admin.Infraestructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tenants", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tenants_DbProvider_DbProviderId",
+                        column: x => x.DbProviderId,
+                        principalTable: "DbProvider",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -79,6 +93,11 @@ namespace WebSalesSystem.Admin.Infraestructure.Migrations
                 column: "TenantId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tenants_DbProviderId",
+                table: "Tenants",
+                column: "DbProviderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tenants_Name_Email",
                 table: "Tenants",
                 columns: new[] { "Name", "Email" },
@@ -93,6 +112,9 @@ namespace WebSalesSystem.Admin.Infraestructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Tenants");
+
+            migrationBuilder.DropTable(
+                name: "DbProvider");
         }
     }
 }

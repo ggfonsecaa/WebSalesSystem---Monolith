@@ -1,8 +1,8 @@
 ﻿namespace WebSalesSystem.Shared.Domain.Tenancy.Aggregates.TenantAggregate;
-public class Configuration(StorageType storageType, DbProvider dbProvider, string storageName, bool useSubTenants, bool allowExternalRegister, bool useEmailConfirmation) : ValueObject, ICommonEntity
+public class Configuration(StorageType storageType, string storageName, bool useSubTenants, bool allowExternalRegister, bool useEmailConfirmation) : ValueObject, ICommonEntity
 {
     public StorageType StorageType { get; private set; } = storageType;
-    public DbProvider DbProvider { get; private set; } = dbProvider;
+    //public DbProvider DbProvider { get; private set; } = dbProvider;
     public string StorageName { get; private set; } = storageName;
     public bool UseSubTenants { get; private set; } = useSubTenants;
     public bool AllowExternalRegister { get; private set; } = allowExternalRegister;

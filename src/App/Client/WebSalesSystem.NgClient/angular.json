@@ -4,6 +4,19 @@
   "newProjectRoot": "projects",
   "projects": {
     "WebSalesSystem.NgClient": {
+      "i18n": {
+        "sourceLocale":"aa-AA",
+        "locales": {
+          "en-US": {
+            "translation": "src/locale/translations.en-US.json",
+            "baseHref": "es-CO/"
+          },
+          "es-CO": {
+            "translation": "src/locale/translations.es-CO.json",
+            "baseHref": "es-CO/"
+          }
+        }
+      },
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,6 +26,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
+            "localize": [ 
+              "es-CO"
+            ],
             "outputPath": "dist/web-sales-system.ng-client",
             "index": "src/index.html",
             "browser": "src/main.ts",
@@ -25,9 +41,13 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -84,6 +104,7 @@
               "src/assets"
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/pink-bluegrey.css",
               "src/styles.css"
             ],
             "scripts": []

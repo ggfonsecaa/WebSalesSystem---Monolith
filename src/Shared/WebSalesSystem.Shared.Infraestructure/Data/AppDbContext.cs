@@ -16,30 +16,30 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, ITenantAccesso
 
         _ = optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
-        switch (_tenantAccessor.Tenant!.Configuration.DbProvider.Name)
-        {
-            case "InMemory":
-                _ = optionsBuilder.UseInMemoryDatabase(nameof(AppDbContext));
-                break;
+        //switch (_tenantAccessor.Tenant!.Configuration.DbProvider.Name)
+        //{
+        //    case "InMemory":
+        //        _ = optionsBuilder.UseInMemoryDatabase(nameof(AppDbContext));
+        //        break;
 
-            case "SqlSever":
-                ConnectionString = _tenantAccessor.GetConnectionString(nameof(AppDbContext));
+        //    case "SqlSever":
+        //        ConnectionString = _tenantAccessor.GetConnectionString(nameof(AppDbContext));
 
-                _ = optionsBuilder.UseSqlServer(ConnectionString, sqlOptions
-                        => sqlOptions.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name))
-                                .AddInterceptors(_auditInterceptor, _tenantInterceptor, _domainEventsInterceptor)
-                                .EnableDetailedErrors(true);
-                break;
+        //        _ = optionsBuilder.UseSqlServer(ConnectionString, sqlOptions
+        //                => sqlOptions.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name))
+        //                        .AddInterceptors(_auditInterceptor, _tenantInterceptor, _domainEventsInterceptor)
+        //                        .EnableDetailedErrors(true);
+        //        break;
 
-            case "Oracle":
-                break;
+        //    case "Oracle":
+        //        break;
 
-            case "PostgreSQL":
-                break;
+        //    case "PostgreSQL":
+        //        break;
 
-            default:
-                break;
-        }
+        //    default:
+        //        break;
+        //}
 
 
     }
